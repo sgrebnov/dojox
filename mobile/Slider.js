@@ -10,11 +10,11 @@ define([
 	"dojo/dom-geometry",
 	"dojo/dom-style",
 	"dojo/keys",
-	"dojo/touch",
+	"dojo/pointer",
 	"dijit/_WidgetBase",
 	"dijit/form/_FormValueMixin"
 ],
-	function(array, connect, declare, lang, win, has, domClass, domConstruct, domGeometry, domStyle, keys, touch, WidgetBase, FormValueMixin){
+	function(array, connect, declare, lang, win, has, domClass, domConstruct, domGeometry, domStyle, keys, pointer, WidgetBase, FormValueMixin){
 
 	return declare("dojox.mobile.Slider", [WidgetBase, FormValueMixin], {
 		// summary:
@@ -143,8 +143,8 @@ define([
 				array.forEach(actionHandles, connect.disconnect);
 				var root = win.doc.documentElement;
 				var actionHandles = [
-					this.connect(root, touch.move, continueDrag),
-					this.connect(root, touch.release, endDrag)
+					this.connect(root, pointer.move, continueDrag),
+					this.connect(root, pointer.up, endDrag)
 				];
 			}
 
@@ -196,8 +196,8 @@ define([
 			this._reversed = !((horizontal && ((ltr && !flip) || (!ltr && flip))) || (!horizontal && flip));
 			this._attrs = horizontal ? { x:'x', w:'w', l:'l', r:'r', pageX:'pageX', clientX:'clientX', handleLeft:"left", left:this._reversed ? "right" : "left", width:"width" } : { x:'y', w:'h', l:'t', r:'b', pageX:'pageY', clientX:'clientY', handleLeft:"top", left:this._reversed ? "bottom" : "top", width:"height" };
 			this.progressBar.style[this._attrs.left] = "0px";
-			this.connect(this.touchBox, touch.press, beginDrag);
-			this.connect(this.handle, touch.press, beginDrag);
+			this.connect(this.touchBox, pointer.down, beginDrag);
+			this.connect(this.handle, pointer.down, beginDrag);
 			this.connect(this.domNode, "onkeypress", keyPress); // for desktop a11y
 			this.connect(this.domNode, "onkeyup", keyUp); // fire onChange on desktop
 			this.startup();
