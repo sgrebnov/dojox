@@ -10,9 +10,9 @@ define([
 	"dijit/_WidgetBase",
 	"dojo/_base/array",
 	"dijit/registry",
-	"dojo/touch",
+	"dojo/pointer",
 	"./_css3"
-], function(declare, lang, has, win, domClass, domGeometry, domStyle, windowUtils, WidgetBase, array, registry, touch, css3){
+], function(declare, lang, has, win, domClass, domGeometry, domStyle, windowUtils, WidgetBase, array, registry, pointer, css3){
 
 	return declare("dojox.mobile.Overlay", WidgetBase, {
 		// summary:
@@ -74,7 +74,7 @@ define([
 			}, 100);
 			var skipReposition = false;
 
-			this._moveHandle = this.connect(win.doc.documentElement, touch.move,
+			this._moveHandle = this.connect(win.doc.documentElement, pointer.move,
 				function(){
 					skipReposition = true;
 				}

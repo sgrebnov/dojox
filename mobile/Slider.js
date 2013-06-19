@@ -105,7 +105,7 @@ define([
 
 			function beginDrag(e){
 				function getEventData(e){
-					point = isMouse ? e[this._attrs.pageX] : (e.touches ? e.touches[0][this._attrs.pageX] : e[this._attrs.clientX]);
+					point = e[this._attrs.pageX];
 					pixelValue = point - startPixel;
 					pixelValue = Math.min(Math.max(pixelValue, 0), maxPixels);
 					var discreteValues = this.step ? ((this.max - this.min) / this.step) : maxPixels;
@@ -128,7 +128,6 @@ define([
 				}
 
 				e.preventDefault();
-				var isMouse = e.type == "mousedown";
 				var box = domGeometry.position(node, false); // can't use true since the added docScroll and the returned x are body-zoom incompatibile
 				var bodyZoom = has("ie") ? 1 : (domStyle.get(win.body(), "zoom") || 1);
 				if(isNaN(bodyZoom)){ bodyZoom = 1; }

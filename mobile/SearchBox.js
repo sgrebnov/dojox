@@ -6,10 +6,10 @@ define([
 	"dojox/mobile/TextBox",
 	"dojo/dom-class",
 	"dojo/keys",
-	"dojo/touch",
+	"dojo/pointer",
 	"dojo/on",
 	"./sniff"
-], function(declare, lang, win, SearchMixin, TextBox, domClass, keys, touch, on, has){
+], function(declare, lang, win, SearchMixin, TextBox, domClass, keys, pointer, on, has){
 
 	return declare("dojox.mobile.SearchBox", [TextBox, SearchMixin], {
 		// summary:
@@ -83,12 +83,12 @@ define([
 			var touchStartX, touchStartY;
 			var handleRelease;
 			if(has("ios")){
-				this.on(touch.press, function(evt){
+				this.on(pointer.down, function(evt){
 					var rect;
-					touchStartX = evt.touches ? evt.touches[0].pageX : evt.pageX;
-					touchStartY = evt.touches ? evt.touches[0].pageY : evt.pageY;
+					touchStartX = evt.pageX;
+					touchStartY = evt.pageY;
 					// As the native searchbox on iOS, clear on release, not on start.
-					handleRelease = on(win.doc, touch.release,
+					handleRelease = on(win.doc, pointer.up,
 						function(evt){
 							var rect, dx, dy;
 							if(_this.get("value") != ""){
@@ -110,7 +110,7 @@ define([
 					);
 					rect = _this.domNode.getBoundingClientRect();
 					// if touched in the right-most 20 pixels of the search box 
-					if(rect.right - (evt.touches ? evt.touches[0].pageX : evt.pageX) >= 20){
+					if(rect.right - (evt.pageX) >= 20){
 						// cancel
 						if(handleRelease){
 							handleRelease.remove();

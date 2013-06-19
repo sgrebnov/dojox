@@ -5,12 +5,12 @@ define([
 	"dojo/dom-attr",
 	"dojo/dom-construct",
 	"dojo/on",
-	"dojo/touch",
+	"dojo/pointer",
 	"dijit/registry",
 	"./Pane",
 	"./iconUtils",
 	"./sniff"
-], function(declare, win, domClass, domAttr, domConstruct, on, touch, registry, Pane, iconUtils, has){
+], function(declare, win, domClass, domAttr, domConstruct, on, pointer, registry, Pane, iconUtils, has){
 	// module:
 	//		dojox/mobile/SimpleDialog
 
@@ -133,7 +133,7 @@ define([
 
 			if(has("windows-theme")) {
 				// Hack to prevent interaction with elements placed under cover div.
-				this.own(on(this._cover[0], touch.press, function() {}));
+				this.own(on(this._cover[0], pointer.down, function() {}));
 			}
 		},
 

@@ -7,14 +7,14 @@ define([
 	"dojo/dom-construct",
 	"dojo/has", 
 	"dojo/has!dojo-bidi?dojox/mobile/bidi/SpinWheelSlot",
-	"dojo/touch",
+	"dojo/pointer",
 	"dojo/on",
 	"dijit/_Contained",
 	"dijit/_WidgetBase",
 	"./scrollable",
 	"./common"
 ], function(dojo, array, declare, win, domClass, domConstruct, has, BidiSpinWheelSlot, 
-	touch, on, Contained, WidgetBase, Scrollable){
+	pointer, on, Contained, WidgetBase, Scrollable){
 
 	// module:
 	//		dojox/mobile/SpinWheelSlot
@@ -138,7 +138,7 @@ define([
 					containerNode = this.containerNode,
 					threshold = 5;
 
-				this.own(on(self.touchNode, touch.press, function(e){
+				this.own(on(self.touchNode, pointer.down, function(e){
 					var posY = e.pageY,
 						slots = self.getParent().getChildren();
 
@@ -153,7 +153,7 @@ define([
 						}
 					}
 
-					var moveHandler = on(self.touchNode, touch.move, function(e){
+					var moveHandler = on(self.touchNode, pointer.move, function(e){
 						if(Math.abs(e.pageY - posY) < threshold){
 							return;
 						}
@@ -169,7 +169,7 @@ define([
 						}
 					});
 
-					var releaseHandler = on(self.touchNode, touch.release, function(){
+					var releaseHandler = on(self.touchNode, pointer.up, function(){
 						releaseHandler.remove();
 						moveHandler.remove();
 						containerNode.selected ?

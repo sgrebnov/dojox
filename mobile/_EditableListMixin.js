@@ -9,11 +9,11 @@ define([
 	"dojo/dom-class",
 	"dojo/dom-geometry",
 	"dojo/dom-style",
-	"dojo/touch",
+	"dojo/pointer",
 	"dojo/dom-attr",
 	"dijit/registry",
 	"./ListItem"
-], function(array, connect, declare, event, win, domClass, domGeometry, domStyle, touch, domAttr, registry, ListItem){
+], function(array, connect, declare, event, win, domClass, domGeometry, domStyle, pointer, domAttr, registry, ListItem){
 
 	// module:
 	//		dojox/mobile/EditableRoundRectList
@@ -114,15 +114,15 @@ define([
 
 			if(!this._conn){
 				this._conn = [
-					this.connect(this.domNode, touch.move, "_onTouchMove"),
-					this.connect(win.doc, touch.release, "_onTouchEnd")
+					this.connect(this.domNode, pointer.move, "_onTouchMove"),
+					this.connect(win.doc, pointer.up, "_onTouchEnd")
 				];
 			}
 			this._pos = [];
 			array.forEach(this.getChildren(), function(c, index){
 				this._pos.push(domGeometry.position(c.domNode, true).y);
 			}, this);
-			this.touchStartY = e.touches ? e.touches[0].pageY : e.pageY;
+			this.touchStartY = e.pageY;
 			this._startTop = domGeometry.getMarginBox(item.domNode).t;
 			event.stop(e);
 		},
@@ -130,7 +130,7 @@ define([
 		_onTouchMove: function(e){
 			// tags:
 			//		private
-			var y = e.touches ? e.touches[0].pageY : e.pageY;
+			var y = e.pageY;
 			var index = this._pos.length - 1;
 			for(var i = 1; i < this._pos.length; i++){
 				if(y < this._pos[i]){
@@ -202,7 +202,7 @@ define([
 			}, this);
 			if(!this._handles){
 				this._handles = [
-					this.connect(this.domNode, touch.press, "_onTouchStart"),
+					this.connect(this.domNode, pointer.down, "_onTouchStart"),
 					this.connect(this.domNode, "onclick", "_onClick"),
 					this.connect(this.domNode, "onkeydown", "_onClick") // for desktop browsers
 				];

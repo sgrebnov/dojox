@@ -4,7 +4,7 @@ define([
 	"dojo/_base/lang",
 	"dojo/_base/window",
 	"dojo/dom-class",
-	"dojo/touch",
+	"dojo/pointer",
 	"dijit/registry",
 	"dijit/_Contained",
 	"dijit/_Container",
@@ -13,7 +13,7 @@ define([
 	"./iconUtils",
 	"./sniff",
 	"dojo/has!dojo-bidi?dojox/mobile/bidi/_ItemBase"
-], function(array, declare, lang, win, domClass, touch, registry, Contained, Container, WidgetBase, TransitionEvent, iconUtils, has, BidiItemBase){
+], function(array, declare, lang, win, domClass, pointer, registry, Contained, Container, WidgetBase, TransitionEvent, iconUtils, has, BidiItemBase){
 
 	// module:
 	//		dojox/mobile/_ItemBase
@@ -217,7 +217,7 @@ define([
 			//		private
 			if(this._handleClick && this._selStartMethod === "touch"){
 				if(!this._onTouchStartHandle){
-					this._onTouchStartHandle = this.connect(this.domNode, touch.press, "_onTouchStart");
+					this._onTouchStartHandle = this.connect(this.domNode, pointer.down, "_onTouchStart");
 				}
 			}else{
 				if(this._onTouchStartHandle){
@@ -323,11 +323,11 @@ define([
 				// Connect to the entire window. Otherwise, fail to receive
 				// events if operation is performed outside this widget.
 				// Expose both connect handlers in case the user has interest.
-				this._onTouchMoveHandle = this.connect(win.body(), touch.move, "_onTouchMove");
-				this._onTouchEndHandle = this.connect(win.body(), touch.release, "_onTouchEnd");
+				this._onTouchMoveHandle = this.connect(win.body(), pointer.move, "_onTouchMove");
+				this._onTouchEndHandle = this.connect(win.body(), pointer.up, "_onTouchEnd");
 			}
-			this.touchStartX = e.touches ? e.touches[0].pageX : e.clientX;
-			this.touchStartY = e.touches ? e.touches[0].pageY : e.clientY;
+			this.touchStartX = e.clientX;
+			this.touchStartY = e.clientY;
 			this._currentSel = this.selected;
 
 			if(this._delayedSelection){
@@ -350,8 +350,8 @@ define([
 		_onTouchMove: function(e){
 			// tags:
 			//		private
-			var x = e.touches ? e.touches[0].pageX : e.clientX;
-			var y = e.touches ? e.touches[0].pageY : e.clientY;
+			var x = e.clientX;
+			var y = e.clientY;
 			if(Math.abs(x - this.touchStartX) >= 4 ||
 			   Math.abs(y - this.touchStartY) >= 4){ // dojox/mobile/scrollable.threshold
 				this.cancel();

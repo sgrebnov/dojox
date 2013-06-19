@@ -8,14 +8,14 @@ define([
 	"dojo/dom-construct",
 	"dojo/dom-style",
 	"dojo/dom-attr",
-	"dojo/touch",
+	"dojo/pointer",
 	"dijit/_Contained",
 	"dijit/_WidgetBase",
 	"./sniff", 
 	"./_maskUtils",
 	"./common",
 	"dojo/has!dojo-bidi?dojox/mobile/bidi/Switch"
-], function(array, connect, declare, event, win, domClass, domConstruct, domStyle, domAttr, touch, Contained, WidgetBase, has, maskUtils, dm, BidiSwitch){
+], function(array, connect, declare, event, win, domClass, domConstruct, domStyle, domAttr, pointer, Contained, WidgetBase, has, maskUtils, dm, BidiSwitch){
 
 	// module:
 	//		dojox/mobile/Switch
@@ -120,7 +120,7 @@ define([
 		postCreate: function(){
 			this.connect(this.switchNode, "onclick", "_onClick");
 			this.connect(this.switchNode, "onkeydown", "_onClick"); // for desktop browsers
-			this._startHandle = this.connect(this.switchNode, touch.press, "onTouchStart");
+			this._startHandle = this.connect(this.switchNode, pointer.down, "onTouchStart");
 			this._initialValue = this.value; // for reset()
 		},
 
@@ -190,8 +190,8 @@ define([
 			this.innerStartX = this.inner.offsetLeft;
 			if(!this._conn){
 				this._conn = [
-					this.connect(this.inner, touch.move, "onTouchMove"),
-					this.connect(win.doc, touch.release, "onTouchEnd")
+					this.connect(this.inner, pointer.move, "onTouchMove"),
+					this.connect(win.doc, pointer.up, "onTouchEnd")
 				];
 
 				/* While moving the slider knob sometimes IE fires MSPointerCancel event. That prevents firing
@@ -200,10 +200,10 @@ define([
 				same lintener as for MSPointerUp event.
 				*/
 				if(has("windows-theme")){
-					this._conn.push(this.connect(win.doc, "MSPointerCancel", "onTouchEnd"));
+					this._conn.push(this.connect(win.doc, pointer.cancel, "onTouchEnd"));
 				}
 			}
-			this.touchStartX = e.touches ? e.touches[0].pageX : e.clientX;
+			this.touchStartX = e.clientX;
 			this.left.style.display = "";
 			this.right.style.display = "";
 			event.stop(e);
@@ -214,13 +214,7 @@ define([
 			// summary:
 			//		Internal function to handle touchMove events.
 			e.preventDefault();
-			var dx;
-			if(e.targetTouches){
-				if(e.targetTouches.length != 1){ return; }
-				dx = e.targetTouches[0].clientX - this.touchStartX;
-			}else{
-				dx = e.clientX - this.touchStartX;
-			}
+			var dx = e.clientX - this.touchStartX;
 			var pos = this.innerStartX + dx;
 			var d = 10;
 			if(pos <= -(this._width-d)){ pos = -this._width; }

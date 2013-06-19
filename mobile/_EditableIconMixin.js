@@ -7,13 +7,13 @@ define([
 	"dojo/_base/window",
 	"dojo/dom-geometry",
 	"dojo/dom-style",
-	"dojo/touch",
+	"dojo/pointer",
 	"dijit/registry",
 	"./IconItem",
 	"./sniff",
 	"./viewRegistry",
 	"./_css3"
-], function(array, connect, declare, event, lang, win, domGeometry, domStyle, touch, registry, IconItem, has, viewRegistry, css3){
+], function(array, connect, declare, event, lang, win, domGeometry, domStyle, pointer, registry, IconItem, has, viewRegistry, css3){
 
 	// module:
 	//		dojox/mobile/_EditableIconMixin
@@ -132,12 +132,12 @@ define([
 
 			if(!this._conn){
 				this._conn = [
-					this.connect(this.domNode, touch.move, "_onTouchMove"),
-					this.connect(win.doc, touch.release, "_onTouchEnd")
+					this.connect(this.domNode, pointer.move, "_onTouchMove"),
+					this.connect(win.doc, pointer.up, "_onTouchEnd")
 				];
 			}
-			this._touchStartPosX = e.touches ? e.touches[0].pageX : e.pageX;
-			this._touchStartPosY = e.touches ? e.touches[0].pageY : e.pageY;
+			this._touchStartPosX = e.pageX;
+			this._touchStartPosY = e.pageY;
 			if(this.isEditing){
 				this._onDragStart(e);
 			}else{
@@ -160,8 +160,8 @@ define([
 			}
 			this.scaleItem(movingItem, 1.1);
 
-			var x = e.touches ? e.touches[0].pageX : e.pageX;
-			var y = e.touches ? e.touches[0].pageY : e.pageY;
+			var x = e.pageX;
+			var y = e.pageY;
 			
 			var enclosingScrollable = viewRegistry.getEnclosingScrollable(movingItem.domNode);
 			var dx = 0;
@@ -193,8 +193,8 @@ define([
 		_onTouchMove: function(e){
 			// tags:
 			//		private
-			var x = e.touches ? e.touches[0].pageX : e.pageX;
-			var y = e.touches ? e.touches[0].pageY : e.pageY;
+			var x = e.pageX;
+			var y = e.pageY;
 			if(this._dragging){
 				domStyle.set(this._movingItem.domNode, {
 					top: (this._offsetPos.y + y) + "px",
@@ -407,7 +407,7 @@ define([
 			//		private
 			this._set("editable", editable);
 			if(editable && !this._touchStartHandle){ // Allow users to start editing by long press on IconItems
-				this._touchStartHandle = this.connect(this.domNode, touch.press, "_onTouchStart");
+				this._touchStartHandle = this.connect(this.domNode, pointer.down, "_onTouchStart");
 			}else if(!editable && this._touchStartHandle){
 				this.disconnect(this._touchStartHandle);
 				this._touchStartHandle = null;

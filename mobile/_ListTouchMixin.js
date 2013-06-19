@@ -1,9 +1,9 @@
 define([
 	"dojo/_base/declare",
-	"dojo/touch",
+	"dojo/pointer",
 	"./sniff",
 	"dijit/form/_ListBase"
-], function(declare, touch, has, ListBase){
+], function(declare, pointer, has, ListBase){
 
 	return declare( "dojox.mobile._ListTouchMixin", ListBase, {
 		// summary:
@@ -22,7 +22,7 @@ define([
 			if(!(has("ie") >= 10 && typeof(MSGesture) !== "undefined")){ 
 				this._listConnect("click", "_onClick");
 			}else{
-				this._listConnect(touch.press, "_onPress");
+				this._listConnect(pointer.down, "_onPress");
 
 				var self = this,
 					tapGesture = new MSGesture(),

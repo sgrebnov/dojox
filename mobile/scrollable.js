@@ -8,12 +8,12 @@ define([
 	"dojo/dom-construct",
 	"dojo/dom-style",
 	"dojo/dom-geometry",
-	"dojo/touch",
+	"dojo/pointer",
 	"./sniff",
 	"./_css3",
 	"./_maskUtils"
 ], function(dojo, connect, event, lang, win, domClass, domConstruct, domStyle,
-			domGeom, touch, has, css3, maskUtils){
+			domGeom, pointer, has, css3, maskUtils){
 
 	// module:
 	//		dojox/mobile/scrollable
@@ -151,7 +151,7 @@ define([
 			this._f = (this.scrollDir == "f"); // flipping views
 
 			this._ch = []; // connect handlers
-			this._ch.push(connect.connect(this.touchNode, touch.press, this, "onTouchStart"));
+			this._ch.push(connect.connect(this.touchNode, pointer.down, this, "onTouchStart"));
 			if(has("css3-animations")){
 				// flag for whether to use -webkit-transform:translate3d(x,y,z) or top/left style.
 				// top/left style works fine as a workaround for input fields auto-scrolling issue,
@@ -445,8 +445,8 @@ define([
 			}
 			if(!this._conn){
 				this._conn = [];
-				this._conn.push(connect.connect(win.doc, touch.move, this, "onTouchMove"));
-				this._conn.push(connect.connect(win.doc, touch.release, this, "onTouchEnd"));
+				this._conn.push(connect.connect(win.doc, pointer.move, this, "onTouchMove"));
+				this._conn.push(connect.connect(win.doc, pointer.up, this, "onTouchEnd"));
 			}
 
 			this._aborted = false;
@@ -456,8 +456,8 @@ define([
 				if(this._scrollBarNodeV){ this._scrollBarNodeV.className = ""; }
 				if(this._scrollBarNodeH){ this._scrollBarNodeH.className = ""; }
 			}
-			this.touchStartX = e.touches ? e.touches[0].pageX : e.clientX;
-			this.touchStartY = e.touches ? e.touches[0].pageY : e.clientY;
+			this.touchStartX = e.clientX;
+			this.touchStartY = e.clientY;
 			this.startTime = (new Date()).getTime();
 			this.startPos = this.getPos();
 			this._dim = this.getDim();
@@ -475,8 +475,8 @@ define([
 			// summary:
 			//		User-defined function to handle touchMove events.
 			if(this._locked){ return; }
-			var x = e.touches ? e.touches[0].pageX : e.clientX;
-			var y = e.touches ? e.touches[0].pageY : e.clientY;
+			var x = e.clientX;
+			var y = e.clientY;
 			var dx = x - this.touchStartX;
 			var dy = y - this.touchStartY;
 			var to = {x:this.startPos.x + dx, y:this.startPos.y + dy};
@@ -1387,7 +1387,7 @@ define([
 						height: "100%",
 						zIndex: 2147483647 // max of signed 32-bit integer
 					});
-					this._ch.push(connect.connect(dm._cover, touch.press, this, "onTouchEnd"));
+					this._ch.push(connect.connect(dm._cover, pointer.down, this, "onTouchEnd"));
 				}else{
 					dm._cover.style.display = "";
 				}

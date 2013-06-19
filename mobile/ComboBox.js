@@ -7,13 +7,13 @@ define([
 	"dojo/dom-style",
 	"dojo/dom-attr",
 	"dojo/window",
-	"dojo/touch",
+	"dojo/pointer",
 	"dijit/form/_AutoCompleterMixin",
 	"dijit/popup",
 	"./_ComboBoxMenu",
 	"./TextBox",
 	"./sniff"
-], function(kernel, declare, lang, win, domGeometry, domStyle, domAttr, windowUtils, touch, AutoCompleterMixin, popup, ComboBoxMenu, TextBox, has){
+], function(kernel, declare, lang, win, domGeometry, domStyle, domAttr, windowUtils, pointer, AutoCompleterMixin, popup, ComboBoxMenu, TextBox, has){
 	kernel.experimental("dojox.mobile.ComboBox"); // should be using a more native search-type UI
 
 	return declare("dojox.mobile.ComboBox", [TextBox, AutoCompleterMixin], {
@@ -239,7 +239,7 @@ define([
 
 				// touchstart isn't really needed since touchmove implies touchstart, but
 				// mousedown is needed since mousemove doesn't know if the left button is down or not
-				this.startHandler = this.connect(win.doc.documentElement, touch.press,
+				this.startHandler = this.connect(win.doc.documentElement, pointer.down,
 					function(e){
 						skipReposition = true;
 						active = true;
@@ -248,10 +248,10 @@ define([
 						startY = e.clientY;
 					}
 				);
-				this.moveHandler = this.connect(win.doc.documentElement, touch.move,
+				this.moveHandler = this.connect(win.doc.documentElement, pointer.move,
 					function(e){
 						skipReposition = true;
-						if(e.touches){
+						if(has("touch")){
 							active = isGesture = true; // touchmove implies touchstart
 						}else if(active && (e.clientX != startX || e.clientY != startY)){
 							isGesture = true;
@@ -264,7 +264,7 @@ define([
 						active = isGesture = false; // click implies no gesture movement
 					}
 				);
-				this.endHandler = this.connect(win.doc.documentElement, "onmouseup",//touch.release,
+				this.endHandler = this.connect(win.doc.documentElement, pointer.up,
 					function(){
 						this.defer(function(){ // allow onclick to go first
 							skipReposition = true;
